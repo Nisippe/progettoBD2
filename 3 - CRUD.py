@@ -1,4 +1,13 @@
 from pymongo import MongoClient
+# Connessione al server MongoDB
+client = MongoClient('mongodb://localhost:27017')
+
+# Seleziona il database
+db = client['progettoBD2']
+
+# Seleziona la collezione
+collection = db['progettoBD2']
+
 
 '''
 CREATE
@@ -8,6 +17,30 @@ collection.insert_one(document)
 documents = [{"campo1": valore1, "campo2": valore2}, {"campo1": valore3, "campo2": valore4}]
 collection.insert_many(documents)
 '''
+
+document={"title": 'Cazzi',
+          "description":'cazzi',
+          "appears on":'cazzi',
+          "artist":'cazzi',
+          "writers":'cazzi',
+          "producer":'cazzi',
+          "released":'cazzi',
+          "streak":'cazzi',
+          "position":'cazzi'}
+collection.insert_one(document)
+
+document=collection.find_one({"title":"Cazzi"})
+print(document)
+
+filter_query={"title":"Cazzi"}
+update_query={"$set":{"description":"porcodio"}}
+collection.update_one(filter_query,update_query)
+
+document=collection.find_one({"title":"Cazzi"})
+print(document)
+
+filter_query={"title":"cazzi"}
+collection.delete_one(filter_query)
 
 '''
 READ
