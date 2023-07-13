@@ -240,33 +240,71 @@ entry_position.place(x=10,y=550)
 
 entry_parametrica=tk.Entry(font='Arial 18', fg='Grey',width=10)
 entry_parametrica.place(x=850,y=270)
-def seleziona_opzione(event):
-    selected_option = combobox.get()
-    listbox_risultati.delete(*listbox_risultati.get_children())
-    #collection.create_index([(selected_option, "text")])
-    documents = collection.find({selected_option: {"$regex": entry_parametrica.get(), "$options": "i"}},
-                                {"_id": 0, "description": 0})
 
-    for document in documents:
-        item = (
-        document["title"], document["appears on"], document["artist"], document["writers"], document["producer"],
-        document["released"], document["streak"], document["position"])
-        listbox_risultati.insert("", tk.END, values=item)
+opzioniS=[">","<"]
+combobox_val=ttk.Combobox(window,values=opzioniS,width=2,height=1)
+def str_position(event):
+    if combobox.get()=='streak' or combobox.get()=='position':
+        combobox_val.place(x=1000,y=270)
+    else:
+        combobox_val.place_forget()
+
+def seleziona_opzione():
+    listbox_risultati.delete(*listbox_risultati.get_children())
+    selected_option = combobox.get()
+    control=combobox_val.get()
+    val=entry_parametrica.get()
+    listbox_risultati.delete(*listbox_risultati.get_children())
+    if selected_option=='streak' or selected_option=='position':
+        if control=='>':
+            documents = collection.find({selected_option: {"$gt":val}})
+            for document in documents:
+                item = (
+                    document["title"], document["appears on"], document["artist"], document["writers"],
+                    document["producer"],
+                    document["released"], document["streak"], document["position"])
+                listbox_risultati.insert("", tk.END, values=item)
+
+        elif control=='<':
+            documents = collection.find({selected_option: {"$lt": val}})
+            for document in documents:
+                item = (
+                    document["title"], document["appears on"], document["artist"], document["writers"],
+                    document["producer"],
+                    document["released"], document["streak"], document["position"])
+                listbox_risultati.insert("", tk.END, values=item)
+    else:
+        documents = collection.find({selected_option: {"$regex": entry_parametrica.get(), "$options": "i"}},
+                                    {"_id": 0, "description": 0})
+
+        for document in documents:
+            item = (
+            document["title"], document["appears on"], document["artist"], document["writers"], document["producer"],
+            document["released"], document["streak"], document["position"])
+            listbox_risultati.insert("", tk.END, values=item)
 
 opzioni=["title","appears on","artist","writers","producer","released","streak","position"]
 combobox=ttk.Combobox(window,values=opzioni)
 combobox.place(x=700,y=270)
-combobox.bind("<<ComboboxSelected>>",seleziona_opzione)
-testo=tk.Label(window,text="Cerca per",height=1)
-testo.place(x=635,y=270)
-
-
-testo2=tk.Button(window,text="Modifica titolo",height=1)
-testo2.place(x=750,y=320)
+combobox.bind("<<ComboboxSelected>>",str_position)
+buttonF = tk.Button(window, text="Cerca per", command=seleziona_opzione)
+buttonF.place(x=635,y=270)
 entry_titolo_old=tk.Entry(font='Arial 18', fg='Grey',width=20)
 entry_titolo_new=tk.Entry(font='Arial 18', fg='Grey',width=20)
 entry_titolo_old.place(x=650,y=360)
 entry_titolo_new.place(x=650,y=400)
+
+def clickChange():
+    titolo_vecchio=entry_titolo_old.get()
+    titolo_nuovo=entry_titolo_new.get()
+    filter_query = {"title": titolo_vecchio}
+    if titolo_nuovo != '':
+        update_query = {"$set": {"title": titolo_nuovo}}
+        collection.update_many(filter_query, update_query)
+
+buttonChange = tk.Button(window, text="Cambia Titolo", command=clickChange,width=20,height=2)
+buttonChange.place(x=720,y=320)
+
 
 
 # Esegui il ciclo principale degli eventi
