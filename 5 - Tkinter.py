@@ -263,6 +263,7 @@ def seleziona_opzione():
                     document["title"], document["appears on"], document["artist"], document["writers"],
                     document["producer"],
                     document["released"], document["streak"], document["position"])
+                print(item)
                 listbox_risultati.insert("", tk.END, values=item)
 
         elif control=='<':
