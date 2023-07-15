@@ -257,7 +257,7 @@ def seleziona_opzione():
     listbox_risultati.delete(*listbox_risultati.get_children())
     if selected_option=='streak' or selected_option=='position':
         if control=='>':
-            documents = collection.find({selected_option: {"$gt":val}})
+            documents = collection.find({selected_option: {"$gt":int(val)}})
             for document in documents:
                 item = (
                     document["title"], document["appears on"], document["artist"], document["writers"],
@@ -267,7 +267,7 @@ def seleziona_opzione():
                 listbox_risultati.insert("", tk.END, values=item)
 
         elif control=='<':
-            documents = collection.find({selected_option: {"$lt": val}})
+            documents = collection.find({selected_option: {"$lt": int(val)}})
             for document in documents:
                 item = (
                     document["title"], document["appears on"], document["artist"], document["writers"],
