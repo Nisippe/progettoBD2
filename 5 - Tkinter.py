@@ -68,7 +68,8 @@ def clickInsert():
     messagebox.showinfo("Inserito","Inserimento effettuato!")
 
 def clickDelete():
-    collection.delete_one(entry_titolo.get())
+    filter_query={"title": entry_titolo.get()}
+    collection.delete_one(filter_query)
     pulizia()
     messagebox.showinfo("Cancellato","Cancellamento effettato!")
 
